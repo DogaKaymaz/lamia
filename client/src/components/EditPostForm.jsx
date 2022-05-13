@@ -5,24 +5,20 @@ import FileBase64 from "react-file-base64";
 import {
     Button,
     TextField,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
 } from "@material-ui/core";
 import { useForm} from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { createPost } from '../actions/post';
+import {updatePost} from "../actions/post";
 
 const useStyles = makeStyles( (theme) => ({
-    paper: {
-        padding: theme.spacing(2)
-    },
     textField: {
-        marginBottom: theme.spacing(2),
+        marginBottom: theme.spacing(2)
     },
+
+    buttons: {
+        marginTop: theme.spacing(2)
+    }
 }));
 
 const postSchema = yup.object().shape({
@@ -31,37 +27,34 @@ const postSchema = yup.object().shape({
     content: yup.string().min(100).required(),
 });
 
-const AddPostForm = ( { open, handleClose }) => {
+const EditPostForm = ( { history, post, closeEditMode }) => {
     const dispatch = useDispatch();
 
-    const [file, setFile] = useState(null);
+    const [file, setFile] = useState(post?.image);
   
     const { register, handleSubmit, formState:{errors}, reset } = useForm({
         resolver: yupResolver(postSchema),
     });
 
     const onSubmit = (data) => {
-        console.log(data);
-        dispatch(createPost({...data, image: file}));
-        clearForm();
-    };
+        const updatedPost = {
+            _id: post._id,
+            ...data,
+            image: file,
+        };
 
-    const clearForm = () => {
+        dispatch(updatePost(post._id, updatedPost));
         reset();
         setFile(null);
-        handleClose();
+        closeEditMode();
     };
+
+
 
     const classes = useStyles();
 
     return (
-    <Dialog open = {open} onClose={handleClose}>
-        <DialogTitle>Create a New Post</DialogTitle>
-        <DialogContent>
-            <DialogContentText>
-            Fill in the Form Below to Add a New Post.
-            </DialogContentText>
-            <div className = {classes.root}>
+            <div>
                 <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
                     <TextField
                     id = "title"
@@ -73,6 +66,7 @@ const AddPostForm = ( { open, handleClose }) => {
                     inputRef = {register}
                     error = {errors.title ? true : false}
                     fullWidth
+                    defaultValue={post?.title}
                     />
 
                     <TextField
@@ -85,6 +79,7 @@ const AddPostForm = ( { open, handleClose }) => {
                     inputRef = {register}
                     error = {errors.author ? true : false}
                     fullWidth
+                    defaultValue={post?.author}
                     />
 
                     <TextField
@@ -99,23 +94,25 @@ const AddPostForm = ( { open, handleClose }) => {
                     inputRef = {register}
                     error = {errors.content ? true : false}
                     fullWidth
+                    defaultValue={post?.content}
                     />
 
                     <FileBase64 multiple={false} onDone={({base64}) => setFile(base64)}/>
+
+                    <div className = {classes.buttons}>
+                    <Button color="Secondary" variant="outlined" type="submit" onClick={closeEditMode}>
+                            Drop
+                        </Button> {" "}
+                        <Button color="primary" variant="outlined" type="submit">
+                            Save
+                        </Button>
+                        
+                    </div>
                 </form>
             </div>
 
-            </DialogContent>
-            <DialogActions>
-                <Button color="inherit" onClick={clearForm}>Drop</Button>
-                <Button type = "submit" 
-                variant = "outlined" 
-                color="primary"
-                onClick={() => handleSubmit(onSubmit)()}
-                >Publish</Button>
-            </DialogActions>
-    </Dialog>
+           
   );
 };
 
-export default AddPostForm;
+export default EditPostForm;

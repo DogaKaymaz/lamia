@@ -1,0 +1,87 @@
+import React from 'react'
+import moment from "moment";
+import {Link} from "react-router-dom";
+import { makeStyles } from '@material-ui/core/styles';
+import{
+    Card,
+    Chip,
+    Button,
+    CardMedia,
+    CardContent,
+    CardActions,
+    Typography,
+} from "@material-ui/core";
+import noimage from "../images/noimage.svg";
+
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        maxWidth: 374,
+        position: "relative",
+    },
+    
+    media: {
+        height: 0,
+        paddingTop: "56.25%", // 16:9
+        backgroundColor: "rgba(0, 0, 0, 0.5",
+        backgroundBlendMode: "darken",
+    },
+
+    overlay: {
+        position: "absolute",
+        top: "20px",
+        left: "20px",
+        color: "white",
+    },
+    
+    chip: {
+        marginTop: theme.spacing(1),
+    },
+    }));
+
+
+const Post = ( { _id, title, author, content, image, createdAt } ) => {
+  
+    const convertRelativeTime = date => {
+        return moment(date).fromNow();
+    };
+  const classes = useStyles();
+    return (
+        <Card className = {classes.root}>
+            <CardMedia
+                className = {classes.media}
+                image = {image || noimage}
+                title = "Image"
+                />
+
+                <div className = {classes.overlay}>
+                    <Typography variant = "body2">{convertRelativeTime(createdAt)}</Typography>
+                </div>
+
+                <CardContent>
+                <Typography variant = "h6" component="p">
+                    {title}
+                </Typography>
+
+                <Typography variant="overline" gutterBottom component="p">
+                    {author}
+                </Typography>
+
+                <Typography variant = "body" gutterBottom component="p">
+                    {content.substring(0,250) + "..."}
+                </Typography>
+
+                </CardContent>
+
+
+                <CardActions>
+                    <Button size = "small" color="primary">
+                        <Link to={'/posts/${_id}'}>More...</Link>
+                    </Button>
+                </CardActions>
+
+        </Card>
+  )
+}
+
+export default Post;
