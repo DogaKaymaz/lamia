@@ -41,11 +41,15 @@ const App = () => {
       <Toolbar>
         <IconButton edge="start" className= {classes.container} color = "inherit" />
         <Typography variant = "h6" color = "secondary" className = {classes.title}>
-          <a href="http://localhost:3000/posts"> Lamia</a>
+          <a href="http://localhost:3000/posts">Lamia</a>
         </Typography>
 
-        <Button color="primary" variant="outlined" startIcon={<PenIcon />}>
-          Yeni Yazı
+        <Button 
+        color="primary" 
+        variant="outlined" 
+        startIcon={<PenIcon />} 
+        onClick={handleOpen}>
+        New Post
         </Button>
       </Toolbar>
     </AppBar>
@@ -62,10 +66,9 @@ const App = () => {
     </Grid>
 
   </Container>
-
-
-  <AddPostForm open = {open} handleClose = {handleClose} />
+  <AddPostForm open={open} handleClose={handleClose} /> 
   </>
-)};
+);
+};
 
 export default App;

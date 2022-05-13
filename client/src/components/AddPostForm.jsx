@@ -1,17 +1,15 @@
-import React from 'react'
-import { makeStyles, ThemeProvider } from '@material-ui/core';
+import React from 'react';
+import { makeStyles } from '@material-ui/core';
 import {
     Button,
     TextField,
-    Select,
-    Input,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-} from "@material-ui/core"
-import { useForm, Controller } from "react-hook-form";
+} from "@material-ui/core";
+import { useForm} from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -20,27 +18,27 @@ const useStyles = makeStyles( (theme) => ({
         padding: theme.spacing(2)
     },
     textField: {
-        marginButtom: theme.spacing(2),
+        marginBottom: theme.spacing(2),
     },
 }));
 
 const postSchema = yup.object().shape({
     title: yup.string().required(),
-    author: yup.string().required(),
+    author: yup.string().max(100).required(),
     content: yup.string().min(100).required(),
 });
 
 const AddPostForm = ( { open, handleClose }) => {
   
-    const { register, handleSubmit, control, errors, reset } = useForm({
+    const { register, handleSubmit, formState:{errors}, reset } = useForm({
         resolver: yupResolver(postSchema)
-    })
+    });
 
     const classes = useStyles();
 
     return (
     <Dialog open = {open} onClose={handleClose}>
-        <DialogTitle>   Create a New Post </DialogTitle>
+        <DialogTitle>Create a New Post </DialogTitle>
         <DialogContent>
             <DialogContentText>
             Fill in the Form Below to Add a New Post.
@@ -95,6 +93,6 @@ const AddPostForm = ( { open, handleClose }) => {
             </DialogActions>
     </Dialog>
   )
-}
+};
 
 export default AddPostForm;
